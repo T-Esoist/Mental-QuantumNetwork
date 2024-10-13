@@ -1,0 +1,63 @@
+import numpy as np
+
+class SeqComputer:
+    def __init__(self):
+        self.qubits = []
+        self.gates = {
+            'Hadamard': np.array([[1/np.sqrt(2), 1/np.sqrt(2)],
+                                  [1/np.sqrt(2), -1/np.sqrt(2)]]),
+            'Pauli-X': np.array([[0, 1],
+                                 [1, 0]]),
+            'CNOT': np.array([[1, 0, 0, 0],
+                              [0, 1, 0, 0],
+                              [0, 0, 0, 1],
+                              [0, 0, 1, 0]])
+        }
+    
+    def add_qubit(self, value):
+        self.qubits.append(value)
+
+    def apply_gate(self, gate_name):
+        if gate_name in self.gates:
+            gate = self.gates[gate_name]
+            # Hier könnten wir die Logik zur Anwendung des Gates auf die Qubits hinzufügen
+            print(f"Anwenden des {gate_name} Gates:")
+            print(gate)
+            print("Unitär?", self.is_unitary(gate))
+        else:
+            print("Unbekanntes Gate")
+
+    def is_unitary(self, matrix):
+        return np.allclose(np.dot(matrix, matrix.T.conj()), np.eye(matrix.shape[0]))
+
+    def addition(self, qubit1, qubit2):
+        return qubit1 + qubit2
+
+    def generate_bell_state(self):
+        # Erzeugt einen Bell-Zustand
+        print("Erzeugung eines Bell-Zustands...")
+        hadamard = self.gates['Hadamard']
+        cnot = self.gates['CNOT']
+        # Hier wäre die Logik zur Erzeugung des Bell-Zustands
+        return np.dot(hadamard, np.array([1, 0])), np.dot(cnot, np.array([0.70710678, 0, 0, 0.70710678]))
+
+def main():
+    seq_comp = SeqComputer()
+    
+    # Tests
+    print("Test 1: Gatter-Vollständigkeit prüfen...")
+    for gate in seq_comp.gates:
+        seq_comp.apply_gate(gate)
+    
+    # Test Addition
+    print("\nTest 2: Simulation eines klassischen Problems (Addition)...")
+    result = seq_comp.addition(1, 1)
+    print(f"Addition von Qubit 1 (1) und Qubit 2 (1) ergibt: {result}")
+    
+    # Test Bell-Zustand
+    print("\nTest 3: Erzeugung von Bell-Zuständen (Verschränkung)...")
+    bell_state = seq_comp.generate_bell_state()
+    print("Erzeugter Zustand nach Hadamard und CNOT (Bell-Zustand):", bell_state)
+
+if __name__ == "__main__":
+    main()
